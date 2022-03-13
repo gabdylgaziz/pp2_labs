@@ -2,6 +2,7 @@ import os
 path = input()
 try:
     os.chdir(path)
+    print(os.getcwd())
     dirs = os.listdir(os.getcwd())
     for i in dirs:
         if os.path.isdir(i):
