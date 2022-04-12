@@ -24,9 +24,11 @@ class Point:
         
 class Food:
     def __init__(self):
+        #появление еды на рандомных местах
         self.x = randint(2, 22)
         self.y = randint(2, 22)
         self.location = Point(self.x, self.y)
+        #загрузка текстуры вместо прямоугольника
         self.image = pygame.image.load("./img/apple.png")
         self.rect = self.image.get_rect()
         
@@ -37,9 +39,11 @@ class Food:
         
 class Speed:
     def __init__(self):
+        #появление уменьшителя скорости на рандомных местах
         self.x = randint(2, 22)
         self.y = randint(2, 22)
         self.location = Point(self.x, self.y)
+        #загрузка текстуры вместо прямоугольника
         self.image = pygame.image.load("./img/yellow.png")
         self.rect = self.image.get_rect()
     
@@ -50,9 +54,11 @@ class Speed:
 
 class Block:
     def __init__(self, x, y):
+        #задать определенные координаты для блока
         self.x = x
         self.y = y
         self.location = Point(self.x, self.y)
+        #загрузка текстуры вместо прямоугольника
         self.image = pygame.image.load("./img/block.png")
         self.rect = self.image.get_rect()
         
@@ -63,9 +69,11 @@ class Block:
         
 class PortalIn:
     def __init__(self):
+        #появление синего портала на рандомных местах
         self.x = randint(2, 22)
         self.y = randint(2, 22)
         self.location = Point(self.x, self.y)
+        #загрузка текстуры вместо прямоугольника
         self.image = pygame.image.load("./img/portalin.png")
         self.rect = self.image.get_rect()
     
@@ -76,9 +84,11 @@ class PortalIn:
         
 class PortalOut:
     def __init__(self):
+        #появление оранжевого портала на рандомных местах
         self.x = randint(2, 22)
         self.y = randint(2, 22)
         self.location = Point(self.x, self.y)
+        #загрузка текстуры вместо прямоугольника
         self.image = pygame.image.load("./img/portalout.png")
         self.rect = self.image.get_rect()
     
@@ -90,6 +100,7 @@ class PortalOut:
 class Snake:
     def __init__(self):
         self.body = [Point(10, 11)]
+        #загрузка текстуры вместо прямоугольника
         self.image = pygame.image.load("./img/zhantore.png")
         self.rect = self.image.get_rect()
         self.dx = 0
@@ -97,12 +108,13 @@ class Snake:
 
     def move(self):    
         for i in range(len(self.body) - 1, 0, -1):
+            #увеличение размера змейки
             self.body[i].x = self.body[i-1].x
             self.body[i].y = self.body[i-1].y
-
+        #для движения
         self.body[0].x += self.dx 
         self.body[0].y += self.dy 
-
+        #чтобы он не улетел за границы карты
         if self.body[0].x * BLOCK_SIZE > WIDTH:
             self.body[0].x = 0
         
@@ -116,15 +128,17 @@ class Snake:
             self.body[0].y = HEIGHT / BLOCK_SIZE
 
     def draw(self):
+        #отрисовка головы
         point = self.body[0]
         self.rect.center = (BLOCK_SIZE * point.x + 10, BLOCK_SIZE * point.y + 10)
         SCREEN.blit(self.image, self.rect)
 
-
+        #отрисовка тела
         for point in self.body[1:]:
             self.rect.center = (BLOCK_SIZE * point.x + 10, BLOCK_SIZE * point.y + 10)
             SCREEN.blit(self.image, self.rect)
-
+    
+    #проверка коллизии
     def check_collision(self, food, block, speeds, cin, cout):
         if self.body[0].x == food.location.x:
             if self.body[0].y == food.location.y:
@@ -158,6 +172,7 @@ class Snake:
 restart = True
 
 while restart:
+    #Initial conditions for restart
     pygame.mixer.music.play(-1)
     global SCREEN, FPS
     SCREEN = pygame.display.set_mode((WIDTHSCREEN, HEIGHT))
@@ -177,6 +192,7 @@ while restart:
     running = True
     lose = False
     while running: 
+        #для показа highscore
         with open("savefile.json", "r") as f:
             DICT = json.loads(f.read())
         SCREEN.blit(background, (0, 0))
@@ -198,7 +214,7 @@ while restart:
                 snake.dx = 0
                 snake.dy = 1
 
-
+        #чтобы прочитать уровень
         wallsCoor = open("level.txt", 'r').readlines()
         walls = []
         for i, line in enumerate(wallsCoor):
@@ -207,7 +223,7 @@ while restart:
                     walls.append(Block(j, i))
         
         
-
+        #для отрисовки уровня
         for block in walls:
             block.draw()
             if snake.body[0].x == block.x and snake.body[0].y == block.y:
@@ -226,7 +242,7 @@ while restart:
         
             
         
-            
+        #event lose
         while lose:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
