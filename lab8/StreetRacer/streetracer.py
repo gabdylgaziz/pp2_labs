@@ -63,6 +63,7 @@ class Enemy(pygame.sprite.Sprite):
         global SCORE, DICT
         self.rect.move_ip(0,self.dy)        
         if (self.rect.bottom > HEIGHT):
+            #для прибавления очков и сохранения
             SCORE+=1
             with open("savefile.json", "w") as f:
                 if SCORE > DICT['highscore']:
