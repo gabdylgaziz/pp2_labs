@@ -7,6 +7,7 @@ HEIGHT = 600
 FPS = 60
 RAD = 15
 
+#иконки кнопок
 rectangle = pygame.image.load("./img/rect.png")
 circle = pygame.image.load("./img/circ.png")
 eras = pygame.image.load("./img/eraser.png")
@@ -36,6 +37,7 @@ mode = 0
 
 COLORS = []
 
+#палитра
 for _ in range(17):
     COLORS.append((randint(0,255), randint(0,255), randint(0,255)))
 
@@ -48,6 +50,7 @@ while not finished:
         if event.type == pygame.QUIT:
             finished = True
         if event.type == pygame.MOUSEBUTTONDOWN:
+            #начать отсчет координаты х и у
             drawing = True
             start_pos = pos
             if pos[0] > 765 and pos[0] < 800 and pos[1] > 0 and pos[1] < HEIGHT:
@@ -64,12 +67,15 @@ while not finished:
                 screen.fill(WHITE)
                 
         if event.type == pygame.MOUSEBUTTONUP:
+            #конец отсчета координаты х и у
             global x, y
             drawing = False
             end_pos = pos
+            #подсчет координаты х и у
             x = abs(start_pos[0] - end_pos[0])
             y = abs(start_pos[1] - end_pos[1])
             
+            #рисовка
             if mode == 1:
                 pygame.draw.rect(screen, color, (pos[0], pos[1], x, y), 4)
             elif mode == 2:
@@ -83,11 +89,11 @@ while not finished:
     
 
     
-    
+    #отрисовка палитры
     each = 35
     for i, col in enumerate(COLORS):
         pygame.draw.rect(screen, col, (765, i * each, each, 35))
-        
+    #отрисовка кнопок  
     rectangle_size = rectangle.get_rect()
     screen.blit(rectangle, rectangle_size)
     
