@@ -28,6 +28,7 @@ class Food:
         self.x = x
         self.y = y
         self.location = Point(self.x, self.y)
+        #загрузка сюрфэйса
         self.image = pygame.image.load("./img/apple.png")
         self.rect = self.image.get_rect()
         
@@ -37,6 +38,7 @@ class Food:
         SCREEN.blit(self.image, self.rect)
         
     def respawn(self, dx, dy):
+        #телепорт еды
         self.dx = dx
         self.dy = dy
         self.location = Point(self.dx, self.dy)
@@ -46,6 +48,7 @@ class Block:
         self.x = x
         self.y = y
         self.location = Point(self.x, self.y)
+        #загрузка сюрфэйса
         self.image = pygame.image.load("./img/block.png")
         self.rect = self.image.get_rect()
         
@@ -63,13 +66,15 @@ class Snake:
         self.dy = 0
 
     def move(self):    
+        #когда змейка хавает, размер увеличивается
         for i in range(len(self.body) - 1, 0, -1):
             self.body[i].x = self.body[i-1].x
             self.body[i].y = self.body[i-1].y
 
         self.body[0].x += self.dx 
         self.body[0].y += self.dy 
-
+        
+        #когда змейка выходит за карту, чтобы он возвращался
         if self.body[0].x * BLOCK_SIZE > WIDTH:
             self.body[0].x = 0
         
@@ -81,7 +86,7 @@ class Snake:
         
         if self.body[0].y < 0:
             self.body[0].y = HEIGHT / BLOCK_SIZE
-
+    #отрисовка головы и тела
     def draw(self):
         point = self.body[0]
         self.rect.center = (BLOCK_SIZE * point.x + 10, BLOCK_SIZE * point.y + 10)
@@ -93,13 +98,13 @@ class Snake:
             SCREEN.blit(self.image, self.rect)
         
         
-
+    #коллизия
     def check_collision(self, food, block):
         if self.body[0].x == food.location.x:
             if self.body[0].y == food.location.y:
                 global SCORE, count
                 count = 0
-                
+                #сохранение в файл
                 SCORE+=randint(1, 3)
                 with open("savefile.json", "w") as f:
                     if SCORE > DICT['highscore']:
@@ -114,6 +119,7 @@ class Snake:
 restart = True
 
 while restart:
+    #начальные условия после рестарта
     pygame.mixer.music.play(-1)
     global SCREEN, FPS
     SCREEN = pygame.display.set_mode((WIDTHSCREEN, HEIGHT))
@@ -131,6 +137,7 @@ while restart:
     running = True
     lose = False
     while running: 
+        #чтобы отображать лучший счет
         with open("savefile.json", "r") as f:
             DICT = json.loads(f.read())
         SCREEN.blit(background, (0, 0))
@@ -152,7 +159,7 @@ while restart:
                 snake.dx = 0
                 snake.dy = 1
 
-
+        #для отрисовки уровня
         wallsCoor = open("level.txt", 'r').readlines()
         walls = []
         for i, line in enumerate(wallsCoor):
@@ -168,8 +175,9 @@ while restart:
                 lose = True
             if food.x != block.x and food.y != block.y:
                 food.draw()
-
+        #-----------------------------------------
         while lose:
+            #цикл для луза, чтобы можно было начать сначала
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     restart = not restart
@@ -199,7 +207,8 @@ while restart:
             SCORE+=1
             LEVEL+=1
             FPS+=2
-        
+        #зависимость телепорта еды от фпс
+        #можно делать по другому с юзеривент, но я не хочу простоты и сделал по другому
         count += (FPS % 3)
         if count % 100 == 0 and count > 0:
             food.respawn(randint(2, 22), randint(2, 22))
