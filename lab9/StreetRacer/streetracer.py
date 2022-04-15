@@ -34,6 +34,7 @@ clock = pygame.time.Clock()
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__() 
+        #отрисовка игрока
         self.image = player
         self.rect = self.image.get_rect()
         self.rect.center = (160, 520)
@@ -53,6 +54,7 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
       def __init__(self):
         super().__init__() 
+        #отрисовка врага
         self.image = enemy
         self.rect = self.image.get_rect()
         self.rect.center=(random.randint(62, 400-62),0) 
@@ -61,7 +63,8 @@ class Enemy(pygame.sprite.Sprite):
  
       def move(self):
         global SCORE, DICT
-        self.rect.move_ip(0,self.dy)        
+        self.rect.move_ip(0,self.dy)  
+        #если NPC выйдет за границы карты по Y, то прибавляется счет и записывается в файл 
         if (self.rect.bottom > HEIGHT):
             SCORE+=1
             with open("savefile.json", "w") as f:
