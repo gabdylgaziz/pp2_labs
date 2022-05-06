@@ -51,7 +51,22 @@ CALL deleteT(%s);
 """
 
 pagination = """
-SELECT * FROM book ORDER BY book.id LIMIT %s OFFSET %s;
+CREATE OR REPLACE FUNCTION getT (lim INT, off INT)
+    RETURNS TABLE (
+        id INT,
+        person_name VARCHAR,
+        person_surname VARCHAR,
+        phone_number VARCHAR
+)
+AS $$
+BEGIN
+    RETURN QUERY SELECT * FROM book ORDER BY book.id LIMIT lim OFFSET off;
+END; $$
+
+LANGUAGE PLPGSQL;
+
+SELECT * FROM getT (%s, %s);
+
 """
      
 while True:
